@@ -6,6 +6,9 @@ Transmission codes can be obtained by running the ReceiveDemo_Advanced example s
 from the rc-switch library, and pressing the up or down button on the remote while pointed
 towards the recieving antenna. More information available at https://github.com/sui77/rc-switch
 
+The DotStar RGB LED onboard the Trinket M0 is controlled with the Adafruit Dotstar library,
+available at https://github.com/adafruit/Adafruit_DotStar
+
 Written by Fischer Moseley for CECFC during August 2018.
 */
 
