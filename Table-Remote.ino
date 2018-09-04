@@ -20,7 +20,7 @@ Written by Fischer Moseley for CECFC during August 2018.
 #define UP_BTN_PIN            3  //pin the up button is connected to
 #define DOWN_BTN_PIN          4  //pin the down button is connected to
 #define TX_PIN                1  //pin the transmitter is connected to
-#define DEBOUNCE_SETTLE_TIME  50 //how long the buttons have to be settled for 
+#define DEBOUNCE_SETTLE_TIME  50 //how long the buttons have to be settled for (in ms)
 
 #if defined(ARDUINO_SAMD_ZERO) && defined(SERIAL_PORT_USBVIRTUAL)
   // Required for Serial on Zero based boards
@@ -58,36 +58,37 @@ unsigned long int codes[]={ //stores the transmitter up button codes
 };
 
 void setup() {
-  Serial.begin(115200);
+  Serial.begin(115200); //init serial
 
+  //init I/O
   pinMode(UP_BTN_PIN, INPUT);
   pinMode(DOWN_BTN_PIN, INPUT);
 
-  strip.begin();
-  strip.show();
+  strip.begin(); //init DotStar
+  strip.show();  //show the empty buffer
 
-  mySwitch.enableTransmit(TX_PIN);  
+  mySwitch.enableTransmit(TX_PIN);
 }
 
 void raise_all(){
   Serial.println("raising...");
-  strip.setPixelColor(0, 0xFF0000);
-  strip.show();
+  strip.setPixelColor(0, 0xFF0000); //set DotStar to red
+  strip.show(); //update the DotStar
   int len = sizeof(codes)/sizeof(codes[0]); //get length of array
   for(int i=0; i<len; i++){ //send each code
     mySwitch.send(codes[i], BIT_LENGTH);
     Serial.println(codes[i]);
     delay(WAIT_TIME); //give the hardware time to settle
   }
-  strip.setPixelColor(0, 0x000000);
-  strip.show();
+  strip.setPixelColor(0, 0x000000); //turn off the DotStar
+  strip.show(); //update the DotStar
   Serial.println("raised");
 }
 
 void lower_all(){
   Serial.println("lowering...");
-  strip.setPixelColor(0, 0x00FF00);
-  strip.show();
+  strip.setPixelColor(0, 0x00FF00);//set DotStar to Blue
+  strip.show(); //update the DotStar
   int len = sizeof(codes)/sizeof(codes[0]); //get length of array
   for(int i=0; i<len; i++){ //send each code
     mySwitch.send(codes[i]+1, BIT_LENGTH);
@@ -95,11 +96,11 @@ void lower_all(){
     delay(WAIT_TIME); //give the hardware time to settle
   }
   Serial.println("lowered");
-  strip.setPixelColor(0, 0x000000);
-  strip.show();
+  strip.setPixelColor(0, 0x000000); //turn off the DotStar
+  strip.show(); //update the DotStar
 }
 
-void reset_states(){
+void reset_states(){ //issues multiple lower commands to ensure desks are down
   Serial.println("resetting...");
   lower_all();
   delay(15000);
@@ -109,7 +110,7 @@ void reset_states(){
   Serial.println("reset");
 } 
 
-void read_state_execute(){
+void read_state_execute(){ //read button state and send necessary commands
   if(UpButtonState&&DownButtonState){reset_states();} //reset the table states if both buttons are pressed
   else if(UpButtonState){raise_all();}                //if the up button is pressed then raise the tables
   else if(DownButtonState){lower_all();}              //if the down button is pressed then lower the tables
@@ -125,6 +126,7 @@ void loop() {
     if(recieved=='r'){reset_states();}
   }
 
+  //button debouncing code
   bool UpButtonReading = digitalRead(UP_BTN_PIN);
   bool DownButtonReading = digitalRead(DOWN_BTN_PIN);
 
