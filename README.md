@@ -8,4 +8,4 @@ By using an Adafruit Trinket M0 and an eBay 433MHz radio transciever, I was able
 This whole project was built in the middle of a fire drill using parts that we had left over from some kits.
 
 # Results
-![Alt Text](https://media.giphy.com/media/vFKqnCdLPNOKc/giphy.gif)
+![Alt Text](https://github.com/FischerMoseley/Table-Remote/blob/master/results.gif)
